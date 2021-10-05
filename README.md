@@ -13,7 +13,7 @@ type (
 
 run `mkvisitor -type "Node,Leaf"` then generate
 
-```
+```go
 package example
 
 type Visitor interface {

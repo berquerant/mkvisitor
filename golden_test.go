@@ -51,6 +51,16 @@ type VisitorDefault struct{}
 
 func (s *VisitorDefault) VisitFirst(_ *First)   {}
 func (s *VisitorDefault) VisitSecond(_ *Second) {}
+func VisitSwitch(visitor Visitor, v interface{}) {
+  switch v := v.(type) {
+  case *First:
+    visitor.VisitFirst(v)
+  case *Second:
+    visitor.VisitSecond(v)
+  default:
+    panic(fmt.Sprintf("VisitSwitch cannot switch %#v", v))
+  }
+}
 `,
 		},
 		{
@@ -69,6 +79,14 @@ func (s *First) Accept(v Visitor) { v.VisitFirst(s) }
 type VisitorDefault struct{}
 
 func (s *VisitorDefault) VisitFirst(_ *First) {}
+func VisitSwitch(visitor Visitor, v interface{}) {
+  switch v := v.(type) {
+  case *First:
+    visitor.VisitFirst(v)
+  default:
+    panic(fmt.Sprintf("VisitSwitch cannot switch %#v", v))
+  }
+}
 `,
 		},
 		{
@@ -87,6 +105,14 @@ func (s *First) Deny(v OverVisitor) { v.OverFirst(s) }
 type OverVisitorDefault struct{}
 
 func (s *OverVisitorDefault) OverFirst(_ *First) {}
+func OverSwitch(visitor OverVisitor, v interface{}) {
+  switch v := v.(type) {
+  case *First:
+    visitor.OverFirst(v)
+  default:
+    panic(fmt.Sprintf("OverSwitch cannot switch %#v", v))
+  }
+}
 `,
 		},
 		{
@@ -105,6 +131,14 @@ func (s *first) accept(v visitor) { v.visitFirst(s) }
 type visitorDefault struct{}
 
 func (s *visitorDefault) visitFirst(_ *first) {}
+func visitSwitch(visitor visitor, v interface{}) {
+  switch v := v.(type) {
+  case *first:
+    visitor.visitFirst(v)
+  default:
+    panic(fmt.Sprintf("visitSwitch cannot switch %#v", v))
+  }
+}
 `,
 		},
 		{
@@ -123,6 +157,14 @@ func (s *First) Accept(v Visitor) { v.VisitFirst(s) }
 type VisitorDefault struct{}
 
 func (s *VisitorDefault) VisitFirst(_ *First) {}
+func VisitSwitch(visitor Visitor, v interface{}) {
+  switch v := v.(type) {
+  case *First:
+    visitor.VisitFirst(v)
+  default:
+    panic(fmt.Sprintf("VisitSwitch cannot switch %#v", v))
+  }
+}
 `,
 		},
 	} {

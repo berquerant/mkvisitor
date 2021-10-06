@@ -45,6 +45,18 @@ type LeafVisitor struct {
 
 func (s *LeafVisitor) VisitLeaf(v *Leaf) { s.value = v.Value }
 
+type LeafFinder struct {
+	values []string
+}
+
+func (s *LeafFinder) add(v string)      { s.values = append(s.values, v) }
+func (s *LeafFinder) VisitLeaf(v *Leaf) { s.add(v.Value) }
+func (s *LeafFinder) VisitVertex(v *Vertex) {
+	for _, leaf := range v.Leaves {
+		VisitSwitch(s, leaf)
+	}
+}
+
 func main() {
 	var (
 		tv = &TravelVisitor{values: []string{}}
@@ -72,6 +84,7 @@ func main() {
 			log.Fatalf("want %v at %d but got %v", w, i, tv.values[i])
 		}
 	}
+
 	var (
 		lv = &LeafVisitor{}
 		t2 = &Leaf{Value: "L"}
@@ -83,5 +96,16 @@ func main() {
 	t2.Accept(lv)
 	if lv.value != "L" {
 		log.Fatalf("want L but got %s", lv.value)
+	}
+
+	lf := &LeafFinder{values: []string{}}
+	t1.Accept(lf)
+	if len(lf.values) != 4 {
+		log.Fatalf("want 4 values but got %d values", len(lf.values))
+	}
+	for i, w := range []string{"l1", "l2", "l3", "l4"} {
+		if lf.values[i] != w {
+			log.Fatalf("want %v at %d but got %v", w, i, lf.values[i])
+		}
 	}
 }

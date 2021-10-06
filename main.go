@@ -79,6 +79,7 @@ func main() {
 	g.Println()
 	g.Printf("package %s\n", g.pkg.name)
 	g.Println()
+	g.Println(`import "fmt"`)
 
 	g.generate(*acceptMethodName, *visitorName, *visitMethodPrefix, acceptors)
 
@@ -149,6 +150,7 @@ func (s *Generator) generate(acceptMethodName, visitorName, visitPrefix string, 
 	s.generateVisitorInterface(visitorName, visitPrefix, targetTypeNames)
 	s.generateAcceptMethods(acceptMethodName, visitorName, visitPrefix, targetTypeNames)
 	s.generateDefaultVisitor(visitorName, visitPrefix, targetTypeNames)
+	s.generateAssignSwitch(visitorName, visitPrefix, targetTypeNames)
 }
 
 func (s *Generator) generateVisitorInterface(visitorName, visitPrefix string, targetTypeNames []string) {
@@ -201,6 +203,32 @@ func (s *Generator) generateDefaultVisitorMethod(defaultVisitorName, visitPrefix
 		s.visitMethodName(visitPrefix, targetTypeName),
 		targetTypeName,
 	)
+}
+
+// generates a function to call the correct visit method for each target type.
+func (s *Generator) generateAssignSwitch(visitorName, visitPrefix string, targetTypeNames []string) {
+	const (
+		visitorArg   = "visitor"
+		interfaceArg = "v"
+	)
+	funcName := fmt.Sprintf("%sSwitch", visitPrefix)
+	s.Printf("func %s(%s %s, %s interface{}) {\n",
+		funcName,
+		visitorArg,
+		visitorName,
+		interfaceArg,
+	)
+	s.Printf(`switch %[1]s := %[1]s.(type) {`, interfaceArg)
+	s.Println()
+	for _, t := range targetTypeNames {
+		s.Printf(`case *%s: %s.%s(v)`, t, visitorArg, s.visitMethodName(visitPrefix, t))
+		s.Println()
+	}
+	panicMsg := fmt.Sprintf("%s cannot switch %s", funcName, "%#v")
+	s.Printf(`default: panic(fmt.Sprintf("%s", %s))`, panicMsg, interfaceArg)
+	s.Println()
+	s.Println("}")
+	s.Println("}")
 }
 
 func (s *Generator) format() []byte {

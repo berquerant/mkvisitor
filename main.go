@@ -25,8 +25,7 @@ var (
 const usage = `Usage of mkvisitor:
   mkvisitor [flags] -type T [directory]
   mkvisitor [flags] -type T files...  # Must be a single package
-Flags:
-`
+Flags:`
 
 func Usage() {
 	fmt.Fprintln(os.Stderr, usage)

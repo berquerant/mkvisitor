@@ -3,7 +3,7 @@ module github.com/berquerant/mkvisitor
 go 1.17
 
 require (
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.3
 	golang.org/x/tools v0.8.0
 )
 

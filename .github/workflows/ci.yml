@@ -1,7 +1,6 @@
 name: CI
 
-permissions:
-  contents: read
+permissions: {}
 
 on:
   push:
@@ -12,22 +11,19 @@ on:
 jobs:
   build:
     timeout-minutes: 5
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        go-version:
-          - "1.24"
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           submodules: true
-      - name: Setup Go ${{ matrix.go-version }}
-        uses: actions/setup-go@v6
+          persist-credentials: false
+      - name: Setup Go
+        uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0
         with:
-          go-version: ${{ matrix.go-version }}
-          cache: true
-      - name: Display Go version
-        run: go version
+          go-version-file: "go.mod"
+          cache-dependency-path: go.sum
       - name: Test
-        run: go test -v
+        run: go test

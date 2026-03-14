@@ -168,7 +168,6 @@ func VisitSwitch(visitor Visitor, v interface{}) {
 `,
 		},
 	} {
-		tc := tc
 		t.Run(tc.title, func(t *testing.T) {
 			input := fmt.Sprintf("package test\n%s", tc.input)
 			file := fmt.Sprintf("%s.go", tc.title)

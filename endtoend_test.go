@@ -25,7 +25,6 @@ func TestEndToEnd(t *testing.T) {
 			typeNames: []string{"Vertex", "Leaf"},
 		},
 	} {
-		tc := tc
 		t.Run(tc.title, func(t *testing.T) {
 			b.compileAndRun(t, tc.fileName, tc.typeNames)
 		})
